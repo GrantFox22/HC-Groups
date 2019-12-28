@@ -1,0 +1,43 @@
+{
+  "name": "hc-groups",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "lint": "standard || exit 0",
+    "lint-fix": "standard --fix || exit 0",
+    "test": "node --use_sctrict ./node_modules/jest/bin/jest --forceExit"
+  },
+  "keywords": [],
+  "author": "Grant Fox",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "bcrypt": "^3.0.7",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "dotenv": "^8.2.0",
+    "ejs": "~2.6.1",
+    "express": "~4.16.1",
+    "express-session": "^1.17.0",
+    "http-errors": "~1.6.3",
+    "morgan": "~1.9.1",
+    "pg": "^7.15.1",
+    "supports-color": "^7.1.0",
+    "uuid4": "^1.1.4"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.6",
+    "eslint": "^6.8.0",
+    "jest": "^24.9.0",
+    "standard": "^14.3.1"
+  },
+  "standard": {
+    "env": {
+      "node": true,
+      "jest": true
+    }
+  }
+}
