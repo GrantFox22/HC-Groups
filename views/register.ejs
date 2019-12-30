@@ -2,23 +2,110 @@
 <html>
 <head>
     <title>HC Group Leaders - Register</title>
+    <script src="/javascripts/jquery-3.4.1.min.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style type="text/css">
+        meter {
+            margin: 0 auto 1em;
+            width: 100%;
+            height: 0.5em;
+
+            /* Applicable only to Firefox */
+            background: none;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        meter::-webkit-meter-bar {
+            background: none;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        meter[value="1"]::-webkit-meter-optimum-value { background: red; }
+        meter[value="2"]::-webkit-meter-optimum-value { background: yellow; }
+        meter[value="3"]::-webkit-meter-optimum-value { background: orange; }
+        meter[value="4"]::-webkit-meter-optimum-value { background: green; }
+
+        meter[value="1"]::-moz-meter-bar { background: red; }
+        meter[value="2"]::-moz-meter-bar { background: yellow; }
+        meter[value="3"]::-moz-meter-bar { background: orange; }
+        meter[value="4"]::-moz-meter-bar { background: green; }
+    </style>
 </head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.2.0/zxcvbn.js"></script>
+<script type="text/javascript">
+  function validatePassword() {
+    clearPasswordMatchError()
+
+    let strength = {
+      0: "Very Poor",
+      1: "Poor",
+      2: "Weak",
+      3: "Good",
+      4: "Strong"
+    }
+    let password = document.getElementById('password');
+    let meter = document.getElementById('password-strength-meter');
+    let text = document.getElementById('password-strength-text');
+    let val = password.value;
+    let result = zxcvbn(val);
+
+    meter.value = result.score;
+
+    if (val !== "") {
+      meter.hidden = false;
+      text.innerHTML = "Password Strength: " + strength[result.score];
+    } else {
+      meter.hidden = true;
+      text.innerHTML = "";
+    }
+  }
+
+  function comparePasswords(textField) {
+    let password = document.getElementById('password').value;
+    let confirmPassword = document.getElementById('confirmPassword').value;
+
+    if (password !== confirmPassword) {
+      if (confirmPassword !== undefined && confirmPassword !== "" && confirmPassword !== null) {
+        $('#confirmPasswordDiv')
+          .addClass('has-error has-feedback')
+          .append('<span class="help-block">Passwords do not match</span>');
+      }
+    }
+  }
+
+  function clearConfirmPasswordMatchError() {
+    $('#confirmPasswordDiv')
+      .removeClass('has-error has-feedback')
+      .find('span').remove();
+  }
+
+  function clearPasswordMatchError() {
+    $('#passwordDiv')
+      .removeClass('has-error has-feedback')
+      .find('span').remove();
+  }
+</script>
 <body>
 <div class="container" style="padding-top:20px">
     <h1 style="text-align: center">HC Group Leaders</h1>
-    <div class="col-sm-6 col-sm-offset-3" style="padding-top:60px">
+    <div class="col-sm-6 col-sm-offset-3" style="padding-top:40px">
         <h1 style="text-align: center"><span class="fa fa-user-plus"></span> Register</h1>
         <br />
         <form action="/register" method="post">
             <div class="form-group">
                 <label>Username</label>
-                <input type="text" class="form-control" name="username">
+                <input type="text" class="form-control" id="username" name="username">
             </div>
-            <div class="form-group">
+            <div class="form-group" id="passwordDiv">
                 <label>Password</label>
-                <input type="password" class="form-control" name="password">
+                <input type="password" class="form-control" id="password" name="password" onkeyup="validatePassword()" onblur="comparePasswords(this)">
+                <meter min="0" max="4" id="password-strength-meter" hidden="hidden"></meter>
+                <p id="password-strength-text"></p>
+            </div>
+            <div class="form-group" id="confirmPasswordDiv">
+                <label>Confirm Password</label>
+                <input type="password" placeholder="Confirm Password" class="form-control" id="confirmPassword" name="confirmPassword" onblur="comparePasswords(this)" onkeyup="clearConfirmPasswordMatchError()">
             </div>
             <button type="submit" class="btn btn-primary btn-lg">Register</button>
         </form>
