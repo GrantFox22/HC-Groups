@@ -40,7 +40,7 @@ function registerLeader (token, userId) {
       await postgres.end()
       if (error) {
         debug('Error in hc-dao.registerLeader: %O', error)
-        resolve(0)
+        resolve(-1)
       }
       resolve(results.rowCount)
     })
