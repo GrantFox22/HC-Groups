@@ -23,9 +23,9 @@ function getLeader (userId) {
       await postgres.end()
       if (error) {
         debug('Error in hc-dao.getLeader: %O', error)
-        resolve(buildLeader(setResponse(null, error)))
+        resolve(buildLeader(null))
       } else {
-        resolve(buildLeader(setResponse(results, null)))
+        resolve(buildLeader(results))
       }
     })
   })
@@ -33,10 +33,9 @@ function getLeader (userId) {
 
 function registerLeader (token, userId) {
   const postgres = connectToPostgres()
-  const updatedDate = new Date()
 
   return new Promise((resolve) => {
-    postgres.query(queries.registerLeader, [token, updatedDate, userId], async (error, results) => {
+    postgres.query(queries.registerLeader, [token, new Date(), userId], async (error, results) => {
       await postgres.end()
       if (error) {
         debug('Error in hc-dao.registerLeader: %O', error)
@@ -47,26 +46,19 @@ function registerLeader (token, userId) {
   })
 }
 
-function setResponse (results, error) {
-  return {
-    results: results,
-    error: error
-  }
-}
-
-function buildLeader (response) {
+function buildLeader (results) {
   const smallGroupLeader = new leader.SmallGroupLeader()
 
-  if (commonUtil.objectHasContents(response.error)) {
+  if (results === null) {
     return smallGroupLeader
   } else {
-    smallGroupLeader.leaderFirstName = response.results.rows[0].leader_first_name
-    smallGroupLeader.leaderLastName = response.results.rows[0].leader_last_name
-    smallGroupLeader.leaderUserId = response.results.rows[0].leader_user_id
-    smallGroupLeader.leaderToken = response.results.rows[0].leader_token
-    smallGroupLeader.leaderType = response.results.rows[0].leader_type
-    smallGroupLeader.createdDate = response.results.rows[0].created_date
-    smallGroupLeader.lastUpdated = response.results.rows[0].last_updated
+    smallGroupLeader.leaderFirstName = results.rows[0].leader_first_name
+    smallGroupLeader.leaderLastName = results.rows[0].leader_last_name
+    smallGroupLeader.leaderUserId = results.rows[0].leader_user_id
+    smallGroupLeader.leaderToken = results.rows[0].leader_token
+    smallGroupLeader.leaderType = results.rows[0].leader_type
+    smallGroupLeader.createdDate = results.rows[0].created_date
+    smallGroupLeader.lastUpdated = results.rows[0].last_updated
   }
 
   return smallGroupLeader

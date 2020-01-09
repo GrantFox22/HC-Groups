@@ -8,7 +8,7 @@ router.get('/', async function (req, res, next) {
   if (!req.session.user) {
     res.redirect('login')
   }
-  res.render('leader-home', { user: 'grant.fox' })
+  res.render('leader-home', { leader: req.session.leader })
 })
 
 router.post('/', async function (req, res, next) {

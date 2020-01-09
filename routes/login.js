@@ -18,11 +18,13 @@ router.post('/', async function (req, res, next) {
   req.session.user = commonUtil.objectHasContents(username) ? username : null
 
   hcDao.getLeader(username)
-    .then(function (user) {
-      return bcrypt.compare(token, user.leaderToken)
+    .then(function (leader) {
+      req.session.leader = leader
+      return bcrypt.compare(token, leader.leaderToken)
     })
     .then(function (samePassword) {
       if (!samePassword) {
+        req.session.leader = null
         res.status(403).send()
       }
       res.redirect('leader-home')

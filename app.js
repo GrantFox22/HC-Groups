@@ -18,7 +18,7 @@ app.use(session({
   resave: false,
   rolling: true,
   saveUninitialized: false,
-  cookie: { secure: false, expires: 30 * 1000 }
+  cookie: { secure: false, expires: 30 * 60 * 1000 }
 }))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.json())
