@@ -8,8 +8,10 @@ const genuuid = require('uuid4')
 
 const indexRouter = require('./routes/index')
 const loginRouter = require('./routes/login')
+const logoutRouter = require('./routes/logout')
 const registerRouter = require('./routes/register')
 const leaderHomeRouter = require('./routes/leader-home')
+const successRouter = require('./routes/success')
 
 const app = express()
 
@@ -32,8 +34,10 @@ app.set('view engine', 'ejs')
 
 app.use('/', indexRouter)
 app.use('/login', loginRouter)
+app.use('/logout', logoutRouter)
 app.use('/register', registerRouter)
 app.use('/leader-home', leaderHomeRouter)
+app.use('/success', successRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

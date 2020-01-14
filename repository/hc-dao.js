@@ -2,6 +2,7 @@ require('dotenv').config()
 const debug = require('../config/debug')('app:support-leads-dao')
 const queries = require('./hc-dao-queries')
 const leader = require('../domain/leader')
+const member = require('../domain/member')
 const commonUtil = require('../util/common-util')
 const { Pool } = require('pg')
 
@@ -26,6 +27,39 @@ function getLeader (userId) {
         resolve(buildLeader(null))
       } else {
         resolve(buildLeader(results))
+      }
+    })
+  })
+}
+
+function getSmallGroupMembers (groupId) {
+  groupId = 1
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.getSmallGroupMembers, [groupId], async (error, results) => {
+      await postgres.end()
+      if (error) {
+        debug('Error in hc-dao.getSmallGroupMembers: %O', error)
+        resolve(buildMembers(null))
+      } else {
+        resolve(buildMembers(results))
+      }
+    })
+  })
+}
+
+function addAttendanceRecord (groupId, firstName, lastName, meetingDate, groupName) {
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.addAttendanceRecord, [groupId, firstName, lastName, meetingDate, groupName], async (error, results) => {
+      await postgres.end()
+      if (error) {
+        debug('Error in hc-dao.addAttendanceRecord: %O', error)
+        resolve(-1)
+      } else {
+        resolve(results.rowCount)
       }
     })
   })
@@ -59,12 +93,32 @@ function buildLeader (results) {
     smallGroupLeader.leaderType = results.rows[0].leader_type
     smallGroupLeader.createdDate = results.rows[0].created_date
     smallGroupLeader.lastUpdated = results.rows[0].last_updated
+    smallGroupLeader.groupId = results.rows[0].group_id
+    smallGroupLeader.groupName = results.rows[0].group_name
   }
 
   return smallGroupLeader
 }
 
+function buildMembers (results) {
+  const members = []
+
+  if (results === null) {
+    return []
+  } else {
+    for (const row of results.rows) {
+      const smallGroupMember = new member.SmallGroupMember()
+      smallGroupMember.memberName = row.member_name
+      members.push(smallGroupMember)
+    }
+  }
+
+  return members
+}
+
 module.exports = {
   getLeader,
+  getSmallGroupMembers,
+  addAttendanceRecord,
   registerLeader
 }

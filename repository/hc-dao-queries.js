@@ -1,16 +1,25 @@
 const getLeader = 'SELECT\n' +
-  'leader_first_name,\n' +
-  'leader_last_name,\n' +
-  'leader_user_id,\n' +
-  'leader_token,\n' +
-  'leader_type,\n' +
-  'created_date,\n' +
-  'last_updated\n' +
+  'dev.leaders.leader_first_name,\n' +
+  'dev.leaders.leader_last_name,\n' +
+  'dev.leaders.leader_user_id,\n' +
+  'dev.leaders.leader_token,\n' +
+  'dev.leaders.leader_type,\n' +
+  'dev.leaders.created_date,\n' +
+  'dev.leaders.last_updated,\n' +
+  'dev.leaders.group_id,\n' +
+  'dev.groups.group_name\n' +
   'FROM\n' +
   'dev.leaders\n' +
+  'JOIN dev.groups ON dev.groups.group_id = dev.leaders.group_id\n' +
   'WHERE\n' +
-  'leader_user_id = $1\n' +
+  'dev.leaders.leader_user_id = $1\n' +
   'LIMIT 1;'
+const getSmallGroupMembers = 'SELECT\n' +
+  'CONCAT(first_name, \' \', last_name) "member_name"\n' +
+  'FROM\n' +
+  'dev.group_members\n' +
+  'WHERE\n' +
+  'group_id = $1;'
 const getStaffMemberDetails = 'SELECT DISTINCT\n' +
   'fl_dev.fl_lead_staff.account_number "account_number",\n' +
   'COALESCE(fl_dev.fl_lead_staff.account_name, \'\') "name",\n' +
@@ -26,14 +35,13 @@ const getStaffMemberDetails = 'SELECT DISTINCT\n' +
   'WHERE\n' +
   'fl_dev.fl_lead_staff.account_number = $1'
 const registerLeader = 'update dev.leaders set leader_token = $1, last_updated = $2 where leader_user_id = $3'
-const saveUser = 'insert into fl_dev.fl_lead_staff \n' +
-  '(lead_staff_type_id, number_leads_allowed, create_datetime, create_userid, last_update_datetime, last_update_userid, record_status, email_address, account_name, user_token) \n' +
-  'values \n' +
-  '()'
+const addAttendanceRecord = 'insert into dev.attendance \n' +
+  '(group_id, attendee_first_name, attendee_last_name, meeting_date, group_name) \n' +
+  'values ($1, $2, $3, $4, $5);'
 
 module.exports = {
   getLeader,
-  getStaffMemberDetails,
+  getSmallGroupMembers,
   registerLeader,
-  saveUser
+  addAttendanceRecord
 }

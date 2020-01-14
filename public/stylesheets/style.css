@@ -1,5 +1,6 @@
 .navbar {
     min-height: 80px;
+    background-color: #FFFFFF; opacity: 0.8; filter: alpha(opacity=80);
 }
 
 .navbar-brand {
@@ -21,4 +22,16 @@
         padding-bottom: 26.5px;
         line-height: 27px;
     }
+}
+
+td.checkIn {
+    vertical-align: middle;
+}
+
+.wallpaper {
+    background-image: url('/images/hc-groups-logo.png');
+    max-height: 50%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }

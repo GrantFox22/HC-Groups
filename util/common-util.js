@@ -76,6 +76,21 @@ function removeAllOccurrencesOfString (value, stringToRemove) {
   return value.replace(regex, '')
 }
 
+function replaceAllOccurrencesOfString (value, stringToRemove, stringToReplace) {
+  const regex = new RegExp(stringToRemove, 'g')
+  return value.replace(regex, stringToReplace)
+}
+
+function getFormattedDate () {
+  const date = new Date()
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }
+  return date.toLocaleDateString('ko-KR', options)
+}
+
 function getCurrentDateTimeString () {
   const date = new Date()
   const options = {
@@ -142,6 +157,7 @@ module.exports = {
   safeGetValue,
   removeLine,
   removeAllOccurrencesOfString,
+  replaceAllOccurrencesOfString,
   convertStringToBoolean,
   getCurrentDateTimeString,
   getDateTimeStringFromDate,
@@ -150,5 +166,6 @@ module.exports = {
   convertToArray,
   getRandomNumericId,
   getRandomPrice,
-  setSessionVariable
+  setSessionVariable,
+  getFormattedDate
 }

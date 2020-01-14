@@ -3,12 +3,14 @@ const debug = require('../config/debug')('app:login')
 const commonUtil = require('../util/common-util')
 const express = require('express')
 const hcDao = require('../repository/hc-dao')
+const leaderHomeValidator = require('../validation/leader-home-validator')
+const leaderHomeService = require('../service/leader-home')
 const bcrypt = require('bcrypt')
 const router = express.Router()
 
 /* GET login page. */
 router.get('/', async function (req, res, next) {
-  res.render('login')
+  res.render('login', { usernameError: null, passwordError: null, username: null })
 })
 
 router.post('/', async function (req, res, next) {
@@ -17,22 +19,34 @@ router.post('/', async function (req, res, next) {
 
   req.session.user = commonUtil.objectHasContents(username) ? username : null
 
-  hcDao.getLeader(username)
-    .then(function (leader) {
-      req.session.leader = leader
-      return bcrypt.compare(token, leader.leaderToken)
-    })
-    .then(function (samePassword) {
-      if (!samePassword) {
-        req.session.leader = null
-        res.status(403).send()
-      }
-      res.redirect('leader-home')
-    })
-    .catch(function (error) {
-      debug('Error authenticating user: %O', error)
-      next()
-    })
+  if (!commonUtil.objectHasContents(token) || !commonUtil.objectHasContents(username)) {
+    const passwordError = commonUtil.objectHasContents(token) ? null : 'Password is a required field'
+    const usernameError = commonUtil.objectHasContents(email) ? null : 'Username is a required field'
+    res.render('login', { usernameError: usernameError, passwordError: passwordError, username: username })
+  } else {
+    hcDao.getLeader(username)
+      .then(function (leader) {
+        if (!leaderHomeValidator.isValidLeader(leader)) {
+          res.render('login', { usernameError: 'Invalid Username', passwordError: null, username: username })
+        } else {
+          req.session.leader = leader
+          return bcrypt.compare(token, leader.leaderToken)
+            .then(async function (samePassword) {
+              if (!samePassword) {
+                res.render('login', { usernameError: null, passwordError: 'Invalid Password', username: username })
+              } else {
+                const leaderHomeData = await leaderHomeService.loadLeaderHomePage(req.session.leader)
+                req.session.members = leaderHomeData.members
+                res.redirect('leader-home')
+              }
+            })
+            .catch(function (error) {
+              debug('Error authenticating user: %O', error)
+              next()
+            })
+        }
+      })
+  }
 })
 
 module.exports = router

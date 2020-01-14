@@ -7,6 +7,8 @@ class SmallGroupLeader {
     this._leaderType = ''
     this._createdDate = ''
     this._lastUpdated = ''
+    this._groupId = ''
+    this._groupName = ''
   }
 
   get leaderFirstName () {
@@ -84,6 +86,28 @@ class SmallGroupLeader {
    */
   set lastUpdated (value) {
     this._lastUpdated = value
+  }
+
+  get groupId () {
+    return this._groupId
+  }
+
+  /**
+   * @param {String} value
+   */
+  set groupId (value) {
+    this._groupId = value
+  }
+
+  get groupName () {
+    return this._groupName
+  }
+
+  /**
+   * @param {String} value
+   */
+  set groupName (value) {
+    this._groupName = value
   }
 }
 

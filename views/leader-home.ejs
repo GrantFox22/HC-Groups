@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="/stylesheets/style.css" rel="stylesheet"/>
 </head>
-<body>
+<body class="wallpaper">
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -28,62 +28,66 @@
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="navbar-collaspe-for-profile">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">Link</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">One more separated link</a></li>
-                    </ul>
-                </li>
-            </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Link</a></li>
+                <% if (leader !== null && leader._leaderType === 2) { %>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Manage Small Groups</a></li>
+                            <li><a href="#">Add/Remove Small Group Members</a></li>
+                        </ul>
+                    </li><%
+                }%>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                    <% if (leader !== null) { %>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Welcome, <%= leader._leaderFirstName%> <span class="caret"></span></a>
+                    <% } else { %>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Site Actions<span class="caret"></span></a><%
+                    }%>
                     <ul class="dropdown-menu">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
+                        <li><a href="logout">Logout</a></li>
                     </ul>
                 </li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
-<% if (leader !== null) { %>
-<% } %>
 <div class="container" style="padding-top:20px">
-    <h1 style="text-align: center">HC Group Leaders</h1>
-    <div class="col-sm-6 col-sm-offset-3" style="padding-top:60px">
-        <h1 style="text-align: center"><span class="fa fa-user-plus"></span> Leader Home</h1>
-        <br />
-        <form action="/register" method="post">
-            <div class="form-group">
-                <label>Username</label>
-                <% if (leader !== null) {%>
-                    <input type="text" class="form-control" name="username" value="<%= leader._leaderUserId%>"><%
-                } else {%>
-                    <input type="text" class="form-control" name="username"><%
-                }%>
+    <% if (leader !== null) { %>
+        <h1 style="text-align: center"><%= leader._groupName%>'s Small Group</h1>
+    <% } else { %>
+        <h1 style="text-align: center">Holland Chapel</h1><%
+    }%>
+    <div class="col-sm-6 col-sm-offset-3" style="padding-top:80px">
+        <form action="/leader-home" method="post">
+            <div class="panel panel-default" id="membersDiv">
+                <table class="table table-bordered table-responsive table-hover" id="membersTable">
+                    <thead>
+                    <tr class="header" style="background-color: #d2f8d2">
+                        <th>Name</th>
+                        <th>Meeting Date</th>
+                        <th>Attended</th>
+                    </tr>
+                    </thead>
+                    <tbody id="membersTableBody">
+                    <% if (members !== null) {
+                        for (const member of members) { %>
+                        <tr id="<%= member._memberName%>Id">
+                            <td class="checkIn"><%= member._memberName%></td>
+                            <td class="checkIn"><%= date%></td>
+                            <td class="checkIn"><input type="checkbox" name="attendanceData" value="<%= member._memberName%>"/></td>
+                        </tr><%
+                        }
+                    }%>
+                    </tbody>
+                </table>
             </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" class="form-control" name="password">
-            </div>
-            <button type="submit" class="btn btn-primary btn-lg">Register</button>
+            <button type="submit" class="btn btn-primary btn-lg" style="text-align: center">Check-In</button>
+            <br />
+            <br />
+            <br />
+            <br />
         </form>
-        <hr>
-        <p>Already have an account? <a href="/login">Login</a></p>
     </div>
 </div>
 </body>
