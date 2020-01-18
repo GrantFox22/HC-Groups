@@ -23,7 +23,7 @@ function getLeader (userId) {
     postgres.query(queries.getLeader, [userId], async (error, results) => {
       await postgres.end()
       if (error) {
-        debug('Error in hc-dao.getLeader: %O', error)
+        console.log('Error in hc-dao.getLeader: %O', error)
         resolve(buildLeader(null))
       } else {
         resolve(buildLeader(results))
@@ -40,7 +40,7 @@ function getSmallGroupMembers (groupId) {
     postgres.query(queries.getSmallGroupMembers, [groupId], async (error, results) => {
       await postgres.end()
       if (error) {
-        debug('Error in hc-dao.getSmallGroupMembers: %O', error)
+        console.log('Error in hc-dao.getSmallGroupMembers: %O', error)
         resolve(buildMembers(null))
       } else {
         resolve(buildMembers(results))
@@ -56,7 +56,7 @@ function addAttendanceRecord (groupId, firstName, lastName, meetingDate, groupNa
     postgres.query(queries.addAttendanceRecord, [groupId, firstName, lastName, meetingDate, groupName], async (error, results) => {
       await postgres.end()
       if (error) {
-        debug('Error in hc-dao.addAttendanceRecord: %O', error)
+        console.log('Error in hc-dao.addAttendanceRecord: %O', error)
         resolve(-1)
       } else {
         resolve(results.rowCount)
@@ -72,7 +72,7 @@ function registerLeader (token, userId) {
     postgres.query(queries.registerLeader, [token, new Date(), userId], async (error, results) => {
       await postgres.end()
       if (error) {
-        debug('Error in hc-dao.registerLeader: %O', error)
+        console.log('Error in hc-dao.registerLeader: %O', error)
         resolve(-1)
       }
       resolve(results.rowCount)

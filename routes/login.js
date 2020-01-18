@@ -41,7 +41,7 @@ router.post('/', async function (req, res, next) {
               }
             })
             .catch(function (error) {
-              debug('Error authenticating user: %O', error)
+              console.log('Error authenticating user: %O', error)
               next()
             })
         }

@@ -34,7 +34,7 @@ router.post('/', async function (req, res, next) {
         }
       })
       .catch(function (error) {
-        debug('Error registering user: %O', error)
+        console.log('Error registering user: %O', error)
         next()
       })
   }
