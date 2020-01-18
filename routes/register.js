@@ -1,5 +1,3 @@
-require('dotenv').config()
-const debug = require('../config/debug')('app:register-route')
 const bcrypt = require('bcrypt')
 const validator = require('../validation/register-validator')
 const hcDao = require('../repository/hc-dao')
@@ -34,7 +32,7 @@ router.post('/', async function (req, res, next) {
         }
       })
       .catch(function (error) {
-        console.log('Error registering user: %O', error)
+        console.log('Error registering user: ' + error)
         next()
       })
   }

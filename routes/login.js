@@ -1,5 +1,3 @@
-require('dotenv').config()
-const debug = require('../config/debug')('app:login')
 const commonUtil = require('../util/common-util')
 const express = require('express')
 const hcDao = require('../repository/hc-dao')
@@ -21,7 +19,7 @@ router.post('/', async function (req, res, next) {
 
   if (!commonUtil.objectHasContents(token) || !commonUtil.objectHasContents(username)) {
     const passwordError = commonUtil.objectHasContents(token) ? null : 'Password is a required field'
-    const usernameError = commonUtil.objectHasContents(email) ? null : 'Username is a required field'
+    const usernameError = commonUtil.objectHasContents(username) ? null : 'Username is a required field'
     res.render('login', { usernameError: usernameError, passwordError: passwordError, username: username })
   } else {
     hcDao.getLeader(username)
@@ -41,7 +39,7 @@ router.post('/', async function (req, res, next) {
               }
             })
             .catch(function (error) {
-              console.log('Error authenticating user: %O', error)
+              console.log('Error authenticating user: ' + error)
               next()
             })
         }

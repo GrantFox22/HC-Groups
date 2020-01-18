@@ -1,5 +1,3 @@
-require('dotenv').config()
-const debug = require('../config/debug')('app:leader-home')
 const leaderHomeService = require('../service/leader-home')
 const commonUtil = require('../util/common-util')
 const hcDao = require('../repository/hc-dao')

@@ -1,9 +1,7 @@
-require('dotenv').config()
-const debug = require('../config/debug')('app:support-leads-dao')
+require('dotenv').config({ path: '../.env' })
 const queries = require('./hc-dao-queries')
 const leader = require('../domain/leader')
 const member = require('../domain/member')
-const commonUtil = require('../util/common-util')
 const { Pool } = require('pg')
 
 function connectToPostgres () {
@@ -23,7 +21,7 @@ function getLeader (userId) {
     postgres.query(queries.getLeader, [userId], async (error, results) => {
       await postgres.end()
       if (error) {
-        console.log('Error in hc-dao.getLeader: %O', error)
+        console.log('Error in hc-dao.getLeader: ' + error)
         resolve(buildLeader(null))
       } else {
         resolve(buildLeader(results))
@@ -40,7 +38,7 @@ function getSmallGroupMembers (groupId) {
     postgres.query(queries.getSmallGroupMembers, [groupId], async (error, results) => {
       await postgres.end()
       if (error) {
-        console.log('Error in hc-dao.getSmallGroupMembers: %O', error)
+        console.log('Error in hc-dao.getSmallGroupMembers: ' + error)
         resolve(buildMembers(null))
       } else {
         resolve(buildMembers(results))
@@ -56,7 +54,7 @@ function addAttendanceRecord (groupId, firstName, lastName, meetingDate, groupNa
     postgres.query(queries.addAttendanceRecord, [groupId, firstName, lastName, meetingDate, groupName], async (error, results) => {
       await postgres.end()
       if (error) {
-        console.log('Error in hc-dao.addAttendanceRecord: %O', error)
+        console.log('Error in hc-dao.addAttendanceRecord: ' + error)
         resolve(-1)
       } else {
         resolve(results.rowCount)
@@ -72,7 +70,7 @@ function registerLeader (token, userId) {
     postgres.query(queries.registerLeader, [token, new Date(), userId], async (error, results) => {
       await postgres.end()
       if (error) {
-        console.log('Error in hc-dao.registerLeader: %O', error)
+        console.log('Error in hc-dao.registerLeader: ' + error)
         resolve(-1)
       }
       resolve(results.rowCount)
