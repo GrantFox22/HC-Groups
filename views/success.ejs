@@ -1,12 +1,61 @@
 <!doctype html>
 <html>
 <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
     <title>HC Group Leaders</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="/stylesheets/style.css" rel="stylesheet"/>
 </head>
 <body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collaspe-for-profile" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://www.hollandchapel.org/" target="_blank">
+                <img alt="Brand" style="max-width:100px" src="/images/hc-logo.png">
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="navbar-collaspe-for-profile">
+            <ul class="nav navbar-nav navbar-right">
+                <% if (leader !== null && leader._leaderType === 2) { %>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Manage Small Groups</a></li>
+                            <li><a href="#">Add/Remove Small Group Members</a></li>
+                        </ul>
+                    </li><%
+                }%>
+                <li class="dropdown">
+                    <% if (leader !== null) { %>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Welcome, <%= leader._leaderFirstName%> <span class="caret"></span></a>
+                    <% } else { %>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Site Actions<span class="caret"></span></a><%
+                    }%>
+                    <ul class="dropdown-menu">
+                        <li><a href="logout">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
 <div class="container" style="padding-top:20px">
+    <div>
+        <img class="center-block" src="/images/hc-groups-logo.png" style="max-height: 230px; max-width: 230px;" />
+    </div>
     <h1 style="text-align: center">Successfully Checked-In Group!</h1>
     <div style="padding-top:60px">
         <div class="form-row text-center">

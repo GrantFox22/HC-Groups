@@ -6,7 +6,7 @@ router.get('/', function (req, res, next) {
   if (!req.session.leader) {
     res.redirect('login')
   } else {
-    res.render('success')
+    res.render('success', { leader: req.session.leader })
   }
 })
 
