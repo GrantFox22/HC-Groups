@@ -6,7 +6,7 @@ const router = express.Router()
 
 /* GET register page. */
 router.get('/', async function (req, res, next) {
-  res.render('register', { hasErrors: validator.getDefaultResponse().hasErrors, errors: validator.getDefaultResponse().errors, username: null, registrationFailureError: null, invalidUserError: null })
+  res.render('register', { hasErrors: validator.getDefaultResponse().hasErrors, errors: validator.getDefaultResponse().errors, username: null, registrationFailureError: null, invalidUserError: null, success: false })
 })
 
 router.post('/', async function (req, res, next) {
@@ -16,7 +16,7 @@ router.post('/', async function (req, res, next) {
 
   const validationResponse = validator.validateRegistration(username, password, confirmPassword)
   if (validationResponse.hasErrors) {
-    res.render('register', { hasErrors: validationResponse.hasErrors, errors: validationResponse.errors, username: username, registrationFailureError: null, invalidUserError: null })
+    res.render('register', { hasErrors: validationResponse.hasErrors, errors: validationResponse.errors, username: username, registrationFailureError: null, invalidUserError: null, success: false })
   } else {
     bcrypt.hash(password, 13)
       .then(function (hashedPassword) {
@@ -24,11 +24,11 @@ router.post('/', async function (req, res, next) {
       })
       .then(function (result) {
         if (result > 0) {
-          res.redirect('login')
+          res.render('register', { hasErrors: validationResponse.hasErrors, errors: validationResponse.errors, username: username, registrationFailureError: null, invalidUserError: null, success: true })
         } else if (result === 0) {
-          res.render('register', { hasErrors: validationResponse.hasErrors, errors: validationResponse.errors, username: username, registrationFailureError: null, invalidUserError: 'User "' + username + '" is not a valid user.' })
+          res.render('register', { hasErrors: validationResponse.hasErrors, errors: validationResponse.errors, username: username, registrationFailureError: null, invalidUserError: 'User "' + username + '" is not a valid user.', success: false })
         } else if (result === -1) {
-          res.render('register', { hasErrors: validationResponse.hasErrors, errors: validationResponse.errors, username: username, registrationFailureError: 'Error: Failed to register user ' + username + '. Please try again later.', invalidUserError: null })
+          res.render('register', { hasErrors: validationResponse.hasErrors, errors: validationResponse.errors, username: username, registrationFailureError: 'Error: Failed to register user ' + username + '. Please try again later.', invalidUserError: null, success: false })
         }
       })
       .catch(function (error) {
