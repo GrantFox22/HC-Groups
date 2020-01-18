@@ -31,7 +31,6 @@ function getLeader (userId) {
 }
 
 function getSmallGroupMembers (groupId) {
-  groupId = 1
   const postgres = connectToPostgres()
 
   return new Promise((resolve) => {
