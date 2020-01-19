@@ -22,7 +22,7 @@ router.post('/', async function (req, res, next) {
     const usernameError = commonUtil.objectHasContents(username) ? null : 'Username is a required field'
     res.render('login', { usernameError: usernameError, passwordError: passwordError, username: username })
   } else {
-    hcDao.getLeader(username)
+    hcDao.getLeader(username.toLowerCase())
       .then(function (leader) {
         if (!leaderHomeValidator.isValidLeader(leader)) {
           res.render('login', { usernameError: 'Invalid Username', passwordError: null, username: username })
