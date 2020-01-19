@@ -10,7 +10,7 @@ const defaultErrors = {
   noConfirmPasswordError: null
 }
 
-function validateRegistration (email, password, confirmPassword) {
+function validateRegistration (username, password, confirmPassword) {
   const errors = {
     registrationError: null,
     passwordMismatchError: null,
@@ -33,8 +33,8 @@ function validateRegistration (email, password, confirmPassword) {
     .has().symbols()
     .has().not().spaces()
 
-  if (!commonUtil.objectHasContents(email)) {
-    errors.noUsernameError = 'Email Address is a required field'
+  if (!commonUtil.objectHasContents(username)) {
+    errors.noUsernameError = 'Username is a required field'
     validationResponse.hasErrors = true
   }
   if (!commonUtil.objectHasContents(password)) {
