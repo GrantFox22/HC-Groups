@@ -9,6 +9,45 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="/stylesheets/style.css" rel="stylesheet"/>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        let counter = 0;
+
+        $("#addGuest").on("click", function () {
+          showGuests();
+          let newRow = $("<tr>");
+          let cols = "";
+
+          cols += '<td class="checkIn"><input type="text" class="form-control" name="guestFirstName"/></td>';
+          cols += '<td class="checkIn"><input type="text" class="form-control" name="guestLastName"/></td>';
+          cols += '<td><input type="button" class="ibtnDel btn btn-md btn-danger" value="Remove"></td>';
+          newRow.append(cols);
+          $("table.order-list").append(newRow);
+          counter++;
+        });
+
+        $("table.order-list").on("click", ".ibtnDel", function (event) {
+          $(this).closest("tr").remove();
+          counter -= 1
+          let guests = $('#guestTable tr').length;
+          if ((guests - 1) === 0) {
+            hideGuests();
+          }
+        });
+      });
+
+      function showGuests() {
+        $("#guestsDiv").show();
+        $("#guestTableHeader").show();
+        $("#guestsHeader").show();
+      }
+
+      function hideGuests() {
+        $("#guestsDiv").hide();
+        $("#guestTableHeader").hide();
+        $("#guestsHeader").hide();
+      }
+    </script>
 </head>
 <body>
 <nav class="navbar navbar-default">
@@ -82,6 +121,25 @@
                     </tbody>
                 </table>
             </div>
+            <h2 id="guestsHeader" style="text-align: center;" hidden>Small Group Guests</h2>
+            <div class="panel panel-default" id="guestsDiv" hidden>
+                <table id="guestTable" class="table order-list table-bordered">
+                    <thead>
+                    <tr class="header" style="background-color: #d2f8d2" id="guestTableHeader" hidden>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <input type="button" class="btn btn-lg btn-info" id="addGuest" value="Add Guest"/>
+            <br />
+            <br />
+            <br />
+            <br />
             <button type="submit" class="btn btn-primary btn-lg" style="text-align: center">Check-In</button>
             <br />
             <br />

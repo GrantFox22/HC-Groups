@@ -22,6 +22,16 @@ function isString (object) {
   return typeof object === 'string' || object instanceof String
 }
 
+function convertToArray (object) {
+  if (!objectHasContents(object)) {
+    return []
+  }
+  if (!Array.isArray(object)) {
+    return [object]
+  }
+  return object
+}
+
 function objectHasContents (object) {
   let hasContents = (object !== null && object !== undefined)
 
@@ -58,5 +68,6 @@ module.exports = {
   removeAllOccurrencesOfString,
   replaceAllOccurrencesOfString,
   convertStringToBoolean,
-  getFormattedDate
+  getFormattedDate,
+  convertToArray
 }

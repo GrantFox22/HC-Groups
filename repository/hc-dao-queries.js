@@ -24,10 +24,14 @@ const registerLeader = 'update dev.leaders set leader_token = $1, last_updated =
 const addAttendanceRecord = 'insert into dev.attendance \n' +
   '(group_id, attendee_first_name, attendee_last_name, meeting_date, group_name) \n' +
   'values ($1, $2, $3, $4, $5);'
+const addGuestAttendanceRecord = 'insert into dev.guests \n' +
+  '(guest_first_name, guest_last_name, group_id, meeting_date) \n' +
+  'values ($1, $2, $3, $4);'
 
 module.exports = {
   getLeader,
   getSmallGroupMembers,
   registerLeader,
-  addAttendanceRecord
+  addAttendanceRecord,
+  addGuestAttendanceRecord
 }

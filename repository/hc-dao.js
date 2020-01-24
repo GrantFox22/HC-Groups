@@ -62,6 +62,22 @@ function addAttendanceRecord (groupId, firstName, lastName, meetingDate, groupNa
   })
 }
 
+function addGuestAttendanceRecord (guestFirstName, guestLastName, groupId, meetingDate) {
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.addGuestAttendanceRecord, [guestFirstName, guestLastName, groupId, meetingDate], async (error, results) => {
+      await postgres.end()
+      if (error) {
+        console.log('Error in hc-dao.addGuestAttendanceRecord: ' + error)
+        resolve(-1)
+      } else {
+        resolve(results.rowCount)
+      }
+    })
+  })
+}
+
 function registerLeader (token, userId) {
   const postgres = connectToPostgres()
 
@@ -117,5 +133,6 @@ module.exports = {
   getLeader,
   getSmallGroupMembers,
   addAttendanceRecord,
+  addGuestAttendanceRecord,
   registerLeader
 }
