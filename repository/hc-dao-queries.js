@@ -20,6 +20,11 @@ const getSmallGroupMembers = 'SELECT\n' +
   'dev.group_members\n' +
   'WHERE\n' +
   'group_id = $1;'
+const getSmallGroupMembersForAdmin = 'SELECT\n' +
+  'first_name, last_name, group_id\n' +
+  'FROM\n' +
+  'dev.group_members\n' +
+  'where group_id = $1;'
 const registerLeader = 'update dev.leaders set leader_token = $1, last_updated = $2 where leader_user_id = $3'
 const addAttendanceRecord = 'insert into dev.attendance \n' +
   '(group_id, attendee_first_name, attendee_last_name, meeting_date, group_name) \n' +
@@ -27,11 +32,14 @@ const addAttendanceRecord = 'insert into dev.attendance \n' +
 const addGuestAttendanceRecord = 'insert into dev.guests \n' +
   '(guest_first_name, guest_last_name, group_id, meeting_date) \n' +
   'values ($1, $2, $3, $4);'
+const getSmallGroups = 'select group_id, group_name from dev.groups;'
 
 module.exports = {
   getLeader,
   getSmallGroupMembers,
+  getSmallGroupMembersForAdmin,
   registerLeader,
   addAttendanceRecord,
-  addGuestAttendanceRecord
+  addGuestAttendanceRecord,
+  getSmallGroups
 }
