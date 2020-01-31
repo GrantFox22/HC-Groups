@@ -16,13 +16,20 @@ router.post('/', async function (req, res, next) {
   if (!req.session.leader) {
     res.redirect('login')
   } else {
-    const attendanceData = req.body.attendanceData
+    const attendanceData = commonUtil.convertToArray(req.body.attendanceData)
+    const guestsFirstNames = commonUtil.convertToArray(req.body.guestFirstName)
+    const guestsLastNames = commonUtil.convertToArray(req.body.guestLastName)
     if (commonUtil.objectHasContents(attendanceData) && attendanceData.length > 0) {
+      const groupId = req.session.leader._groupId
+      const groupName = req.session.leader._groupName
       for (const member of attendanceData) {
         const names = leaderHomeService.parseMemberName(member)
-        const groupId = req.session.leader._groupId
-        const groupName = req.session.leader._groupName
         await hcDao.addAttendanceRecord(groupId, names.firstName, names.lastName, commonUtil.getFormattedDate(), groupName)
+      }
+      if (commonUtil.objectHasContents(guestsFirstNames) && guestsFirstNames.length > 0) {
+        for (let i = 0; i < guestsFirstNames.length; i++) {
+          await hcDao.addGuestAttendanceRecord(guestsFirstNames[i], guestsLastNames[i], groupId, commonUtil.getFormattedDate())
+        }
       }
       res.redirect('success')
     } else {

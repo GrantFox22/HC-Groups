@@ -2,8 +2,6 @@
  * Module to store common functions
  *
  */
-require('dotenv').config()
-
 function convertStringToBoolean (value) {
   if (objectHasContents(value) && isString(value)) {
     if (value.toLowerCase() === 'true') {
@@ -20,6 +18,16 @@ function convertStringToBoolean (value) {
 
 function isString (object) {
   return typeof object === 'string' || object instanceof String
+}
+
+function convertToArray (object) {
+  if (!objectHasContents(object)) {
+    return []
+  }
+  if (!Array.isArray(object)) {
+    return [object]
+  }
+  return object
 }
 
 function objectHasContents (object) {
@@ -58,5 +66,6 @@ module.exports = {
   removeAllOccurrencesOfString,
   replaceAllOccurrencesOfString,
   convertStringToBoolean,
-  getFormattedDate
+  getFormattedDate,
+  convertToArray
 }

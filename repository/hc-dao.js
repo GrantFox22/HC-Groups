@@ -1,7 +1,9 @@
-require('dotenv').config({ path: '../.env' })
+require('dotenv').config()
 const queries = require('./hc-dao-queries')
 const leader = require('../domain/leader')
 const member = require('../domain/member')
+const group = require('../domain/group')
+const hcMember = require('../domain/hc-group-member')
 const { Pool } = require('pg')
 
 function connectToPostgres () {
@@ -46,6 +48,26 @@ function getSmallGroupMembers (groupId) {
   })
 }
 
+function getSmallGroupMembersForAdmin (groupId) {
+  if (groupId === 'default') {
+    return buildMembersForAdmin(null)
+  }
+
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.getSmallGroupMembersForAdmin, [groupId], async (error, results) => {
+      await postgres.end()
+      if (error) {
+        console.log('Error in hc-dao.getSmallGroupMembersForAdmin: ' + error)
+        resolve(buildMembersForAdmin(null))
+      } else {
+        resolve(buildMembersForAdmin(results))
+      }
+    })
+  })
+}
+
 function addAttendanceRecord (groupId, firstName, lastName, meetingDate, groupName) {
   const postgres = connectToPostgres()
 
@@ -57,6 +79,86 @@ function addAttendanceRecord (groupId, firstName, lastName, meetingDate, groupNa
         resolve(-1)
       } else {
         resolve(results.rowCount)
+      }
+    })
+  })
+}
+
+function addGuestAttendanceRecord (guestFirstName, guestLastName, groupId, meetingDate) {
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.addGuestAttendanceRecord, [guestFirstName, guestLastName, groupId, meetingDate], async (error, results) => {
+      await postgres.end()
+      if (error) {
+        console.log('Error in hc-dao.addGuestAttendanceRecord: ' + error)
+        resolve(-1)
+      } else {
+        resolve(results.rowCount)
+      }
+    })
+  })
+}
+
+function updateMember (memberFirstName, memberLastName, id) {
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.updateMember, [memberFirstName, memberLastName, id], async (error, results) => {
+      await postgres.end()
+      if (error) {
+        console.log('Error in hc-dao.updateMember: ' + error)
+        resolve(-1)
+      } else {
+        resolve(results.rowCount)
+      }
+    })
+  })
+}
+
+function deleteMember (memberFirstName, memberLastName, id) {
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.deleteMember, [memberFirstName, memberLastName, id], async (error, results) => {
+      await postgres.end()
+      if (error) {
+        console.log('Error in hc-dao.deleteMember: ' + error)
+        resolve(-1)
+      } else {
+        resolve(results.rowCount)
+      }
+    })
+  })
+}
+
+function addMember (memberFirstName, memberLastName, groupId) {
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.addMember, [memberFirstName, memberLastName, groupId], async (error, results) => {
+      await postgres.end()
+      if (error) {
+        console.log('Error in hc-dao.addMember: ' + error)
+        resolve(-1)
+      } else {
+        resolve(results.rowCount)
+      }
+    })
+  })
+}
+
+function getSmallGroups () {
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.getSmallGroups, async (error, results) => {
+      await postgres.end()
+      if (error) {
+        console.log('Error in hc-dao.getSmallGroups: ' + error)
+        resolve(buildSmallGroups(null))
+      } else {
+        resolve(buildSmallGroups(results))
       }
     })
   })
@@ -101,7 +203,7 @@ function buildMembers (results) {
   const members = []
 
   if (results === null) {
-    return []
+    return members
   } else {
     for (const row of results.rows) {
       const smallGroupMember = new member.SmallGroupMember()
@@ -113,9 +215,51 @@ function buildMembers (results) {
   return members
 }
 
+function buildMembersForAdmin (results) {
+  const members = []
+
+  if (results === null) {
+    return members
+  } else {
+    for (const row of results.rows) {
+      const smallGroupMember = new hcMember.SmallGroupMember()
+      smallGroupMember.firstName = row.first_name
+      smallGroupMember.lastName = row.last_name
+      smallGroupMember.groupId = row.group_id
+      smallGroupMember.id = row.record_id
+      members.push(smallGroupMember)
+    }
+  }
+
+  return members
+}
+
+function buildSmallGroups (results) {
+  const smallGroups = []
+
+  if (results === null) {
+    return smallGroups
+  } else {
+    for (const row of results.rows) {
+      const smallGroup = new group.SmallGroup()
+      smallGroup.groupName = row.group_name
+      smallGroup.groupId = row.group_id
+      smallGroups.push(smallGroup)
+    }
+  }
+
+  return smallGroups
+}
+
 module.exports = {
   getLeader,
   getSmallGroupMembers,
   addAttendanceRecord,
-  registerLeader
+  addGuestAttendanceRecord,
+  getSmallGroups,
+  getSmallGroupMembersForAdmin,
+  registerLeader,
+  updateMember,
+  deleteMember,
+  addMember
 }
