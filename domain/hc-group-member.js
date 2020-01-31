@@ -3,6 +3,7 @@ class SmallGroupMember {
     this._firstName = ''
     this._lastName = ''
     this._groupId = ''
+    this._id = ''
   }
 
   get firstName () {
@@ -36,6 +37,17 @@ class SmallGroupMember {
    */
   set groupId (value) {
     this._groupId = value
+  }
+
+  get id () {
+    return this._id
+  }
+
+  /**
+   * @param {String} value
+   */
+  set id (value) {
+    this._id = value
   }
 }
 

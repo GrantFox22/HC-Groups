@@ -1,4 +1,4 @@
-require('dotenv').config({ path: '../.env' })
+require('dotenv').config()
 const queries = require('./hc-dao-queries')
 const leader = require('../domain/leader')
 const member = require('../domain/member')
@@ -100,6 +100,54 @@ function addGuestAttendanceRecord (guestFirstName, guestLastName, groupId, meeti
   })
 }
 
+function updateMember (memberFirstName, memberLastName, id) {
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.updateMember, [memberFirstName, memberLastName, id], async (error, results) => {
+      await postgres.end()
+      if (error) {
+        console.log('Error in hc-dao.updateMember: ' + error)
+        resolve(-1)
+      } else {
+        resolve(results.rowCount)
+      }
+    })
+  })
+}
+
+function deleteMember (memberFirstName, memberLastName, id) {
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.deleteMember, [memberFirstName, memberLastName, id], async (error, results) => {
+      await postgres.end()
+      if (error) {
+        console.log('Error in hc-dao.deleteMember: ' + error)
+        resolve(-1)
+      } else {
+        resolve(results.rowCount)
+      }
+    })
+  })
+}
+
+function addMember (memberFirstName, memberLastName, groupId) {
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.addMember, [memberFirstName, memberLastName, groupId], async (error, results) => {
+      await postgres.end()
+      if (error) {
+        console.log('Error in hc-dao.addMember: ' + error)
+        resolve(-1)
+      } else {
+        resolve(results.rowCount)
+      }
+    })
+  })
+}
+
 function getSmallGroups () {
   const postgres = connectToPostgres()
 
@@ -178,6 +226,7 @@ function buildMembersForAdmin (results) {
       smallGroupMember.firstName = row.first_name
       smallGroupMember.lastName = row.last_name
       smallGroupMember.groupId = row.group_id
+      smallGroupMember.id = row.record_id
       members.push(smallGroupMember)
     }
   }
@@ -209,5 +258,8 @@ module.exports = {
   addGuestAttendanceRecord,
   getSmallGroups,
   getSmallGroupMembersForAdmin,
-  registerLeader
+  registerLeader,
+  updateMember,
+  deleteMember,
+  addMember
 }

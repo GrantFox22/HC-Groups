@@ -50,6 +50,10 @@
         });
       });
 
+      if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+      }
+
       function showNewMembers() {
         $("#newMemeberDiv").show();
         $("#newMemberTableHeader").show();
@@ -60,6 +64,10 @@
         $("#newMemeberDiv").hide();
         $("#newMemberTableHeader").hide();
         $("#newMemberHeader").hide();
+      }
+
+      function saveButtonClick() {
+        $("#saveButton").val('true');
       }
     </script>
 </head>
@@ -86,8 +94,8 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Manage Small Groups</a></li>
-                            <li><a href="#">Add/Remove Small Group Members</a></li>
+                            <li><a href="#">Generate Attendance Report</a></li>
+                            <li><a href="manage-members">Manage Small Group Members</a></li>
                         </ul>
                     </li><%
                 }%>
@@ -119,9 +127,9 @@
                     <option value="default">Select...</option>
                     <% for (const group of groups) {
                         if (selectedGroup !== null && group._groupId === Number(selectedGroup)) { %>
-                            <option value="<%= group._groupId%>" selected><%= group._groupName%></option>
+                            <option value="<%= group._groupId%>" selected><%= group._groupName%>'s Small Group</option>
                     <%  } else { %>
-                            <option value="<%= group._groupId%>"><%= group._groupName%></option>
+                            <option value="<%= group._groupId%>"><%= group._groupName%>'s Small Group</option>
                     <%  }
                     } %>
                 </select>
@@ -142,12 +150,12 @@
                             </thead>
                             <tbody id="membersTableBody">
                                 <% if (hcMembers !== null) {
-                                    for (const hcMember of hcMembers) { %>
+                                    for (let i = 0; i < hcMembers.length; i++) { %>
                                         <tr>
-                                            <td style="vertical-align: middle"><input type="text" class="form-control" name="memberFirstName" value="<%= hcMember._firstName%>" readonly/></td>
-                                            <td style="vertical-align: middle"><input type="text" class="form-control" name="memberLastName" value="<%= hcMember._lastName%>" readonly/></td>
-                                            <td style="vertical-align: middle"><input type="checkbox" name="modifiedData" value="<%= hcMember._firstName + '#' + hcMember._lastName%>"/></td>
-                                            <td style="vertical-align: middle"><input type="checkbox" name="deletedData" value="<%= hcMember._firstName + '#' + hcMember._lastName%>"/></td>
+                                            <td style="vertical-align: middle"><input type="text" class="form-control" name="memberFirstName" value="<%= hcMembers[i]._firstName%>" readonly/></td>
+                                            <td style="vertical-align: middle"><input type="text" class="form-control" name="memberLastName" value="<%= hcMembers[i]._lastName%>" readonly/></td>
+                                            <td style="vertical-align: middle"><input type="checkbox" name="modifiedData" value="<%= i.toString() + '#' + hcMembers[i]._id%>"/></td>
+                                            <td style="vertical-align: middle"><input type="checkbox" name="deletedData" value="<%= i.toString() + '#' + hcMembers[i]._id%>"/></td>
                                         </tr><%
                                     }
                                 }%>
@@ -155,7 +163,7 @@
                         </table>
                     </div>
                 <% } %>
-                <h2 id="newMemberHeader" style="text-align: center;" hidden>New Members</h2>
+                <h2 id="newMemberHeader" style="text-align: center; padding: 60px;" hidden>New Members</h2>
                 <div class="panel panel-default" id="newMemeberDiv" hidden>
                     <table id="newMemberTable" class="table order-list table-bordered">
                         <thead>
@@ -169,16 +177,29 @@
                         </tbody>
                     </table>
                 </div>
-                <input type="button" class="btn btn-lg btn-success" id="addMember" value="Add New Member"/>
-                <br />
-                <br />
-                <br />
-                <br />
-                <input type="submit" class="btn btn-lg btn-primary" id="save" value="Save Changes"/>
-                <br />
-                <br />
-                <br />
-                <br />
+                <% if (selectedGroup !== null && selectedGroup !== 'default') { %>
+                    <input type="button" class="btn btn-lg btn-success" id="addMember" name="addMember" value="Add New Member" onclick="toggleButtons()"/>
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <button type="submit" class="btn btn-lg btn-primary" id="saveButton" name="saveButton" value="false" onclick="saveButtonClick()">Save Changes</button>
+                    <br />
+                    <br />
+                    <br />
+                    <br /><%
+                } else { %>
+                    <input type="button" style="visibility: hidden" class="btn btn-lg btn-success" id="addMember" name="addMember" value="Add New Member" onclick="toggleButtons()"/>
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <button type="submit" style="visibility: hidden" class="btn btn-lg btn-primary" id="saveButton" name="saveButton" value="false" onclick="saveButtonClick()">Save Changes</button>
+                    <br />
+                    <br />
+                    <br />
+                    <br /><%
+                }%>
             </div>
         </form>
     </div>

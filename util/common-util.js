@@ -2,8 +2,6 @@
  * Module to store common functions
  *
  */
-require('dotenv').config()
-
 function convertStringToBoolean (value) {
   if (objectHasContents(value) && isString(value)) {
     if (value.toLowerCase() === 'true') {
