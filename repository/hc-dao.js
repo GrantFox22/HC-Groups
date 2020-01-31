@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config({ path: '../.env' })
 const queries = require('./hc-dao-queries')
 const leader = require('../domain/leader')
 const member = require('../domain/member')

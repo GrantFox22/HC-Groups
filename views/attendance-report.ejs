@@ -3,12 +3,20 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>HC Group Leaders Admin - Success</title>
+    <title>HC Group Leaders Admin - Attendance Report</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="/stylesheets/style.css" rel="stylesheet"/>
+    <script type="text/javascript">
+      $(document).ready(function () {
+      });
+
+      if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+      }
+    </script>
 </head>
 <body>
 <nav class="navbar navbar-default">
@@ -53,16 +61,27 @@
     </div><!-- /.container-fluid -->
 </nav>
 <div class="container" style="padding-top:20px">
-    <div>
-        <img class="center-block" src="/images/hc-groups-logo.png" style="max-height: 230px; max-width: 230px;" />
-    </div>
-    <h1 style="text-align: center">Changes Saved Successfully!</h1>
-    <div style="padding-top:60px">
-        <div class="form-row text-center">
-            <div style="text-align: center; font-size: 16px">
-                Please click <span><a href="leader-home">here</a></span> to return to the Leader Home page.
+    <% if (leader !== null) { %>
+        <h1 style="text-align: center">Generate Attendance Report</h1>
+    <% } else { %>
+        <h1 style="text-align: center">Holland Chapel</h1><%
+    }%>
+    <div class="col-sm-6 col-sm-offset-3" style="padding-top:80px">
+        <form action="/manage-members" method="post">
+            <div class="form-group">
+                <label for="sundays">Select Small Group Meeting Date:</label>
+                <select class="form-control" id="sundays" name="sundays">
+                    <option value="default">Select...</option>
+                    <% for (const sunday of sundays) { %>
+                        <option value="<%= sunday%>">Sunday, <%= sunday%></option><%
+                    } %>
+                </select>
+                <br />
+                <br />
+                <br />
+                <br />
             </div>
-        </div>
+        </form>
     </div>
 </div>
 </body>

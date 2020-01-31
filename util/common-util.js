@@ -60,6 +60,16 @@ function getFormattedDate () {
   return date.toLocaleDateString('ko-KR', options)
 }
 
+function getFormattedDateByDate (fullDate) {
+  const date = new Date(fullDate)
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }
+  return date.toLocaleDateString('ko-KR', options)
+}
+
 module.exports = {
   isString,
   objectHasContents,
@@ -67,5 +77,6 @@ module.exports = {
   replaceAllOccurrencesOfString,
   convertStringToBoolean,
   getFormattedDate,
+  getFormattedDateByDate,
   convertToArray
 }
