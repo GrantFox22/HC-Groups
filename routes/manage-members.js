@@ -14,7 +14,7 @@ router.get('/', async function (req, res, next) {
   if (!req.session.groups) {
     req.session.groups = await hcDao.getSmallGroups()
   }
-  res.render('manage-members', { leader: req.session.leader, date: commonUtil.getFormattedDate(), groups: req.session.groups, hcMembers: null, selectedGroup: null })
+  res.render('manage-members', { leader: req.session.leader, groups: req.session.groups, hcMembers: null, selectedGroup: null })
 })
 
 router.post('/', async function (req, res, next) {
@@ -23,7 +23,7 @@ router.post('/', async function (req, res, next) {
   } else {
     if (manageMembersService.selectOptionChangedOnly(req.body)) {
       req.session.hcMembers = await hcDao.getSmallGroupMembersForAdmin(req.body.selectedGroup)
-      res.render('manage-members', { leader: req.session.leader, date: commonUtil.getFormattedDate(), groups: req.session.groups, hcMembers: req.session.hcMembers, selectedGroup: req.body.selectedGroup })
+      res.render('manage-members', { leader: req.session.leader, groups: req.session.groups, hcMembers: req.session.hcMembers, selectedGroup: req.body.selectedGroup })
     } else if (manageMembersService.saveChangesClicked(req.body)) {
       const modifiedMembers = commonUtil.convertToArray(req.body.modifiedData)
       const deletedMembers = commonUtil.convertToArray(req.body.deletedData)
@@ -41,7 +41,7 @@ router.post('/', async function (req, res, next) {
         next(createError(500))
       }
     } else {
-      res.render('manage-members', { leader: req.session.leader, date: commonUtil.getFormattedDate(), groups: req.session.groups, hcMembers: null, selectedGroup: null })
+      res.render('manage-members', { leader: req.session.leader, groups: req.session.groups, hcMembers: null, selectedGroup: null })
     }
   }
 })

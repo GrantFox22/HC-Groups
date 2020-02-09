@@ -14,6 +14,7 @@ const leaderHomeRouter = require('./routes/leader-home')
 const successRouter = require('./routes/success')
 const manageMembersRouter = require('./routes/manage-members')
 const adminSuccessRouter = require('./routes/admin-success')
+const attendanceReportRouter = require('./routes/attendance-report')
 
 const app = express()
 
@@ -42,6 +43,7 @@ app.use('/leader-home', leaderHomeRouter)
 app.use('/success', successRouter)
 app.use('/manage-members', manageMembersRouter)
 app.use('/admin-success', adminSuccessRouter)
+app.use('/attendance-report', attendanceReportRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

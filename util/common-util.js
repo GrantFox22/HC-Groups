@@ -16,6 +16,20 @@ function convertStringToBoolean (value) {
   }
 }
 
+function convertIntegerToBoolean (value) {
+  if (objectHasContents(value) && isString(value)) {
+    if (Number(value) === 1) {
+      return true
+    } else if (Number(value) === 0) {
+      return false
+    } else {
+      return null
+    }
+  } else {
+    return null
+  }
+}
+
 function isString (object) {
   return typeof object === 'string' || object instanceof String
 }
@@ -52,6 +66,12 @@ function replaceAllOccurrencesOfString (value, stringToRemove, stringToReplace) 
 
 function getFormattedDate () {
   const date = new Date()
+  const dayOfWeek = date.getDay()
+  if (dayOfWeek === 1 || dayOfWeek === 2) {
+    return getPreviousSunday()
+  } else {
+    date.setDate(date.getDate() + (7 - date.getDay()) % 7)
+  }
   const options = {
     year: 'numeric',
     month: '2-digit',
@@ -60,12 +80,52 @@ function getFormattedDate () {
   return date.toLocaleDateString('ko-KR', options)
 }
 
+function getPreviousSunday () {
+  const date = new Date()
+  const dayOfWeek = date.getDay()
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }
+
+  if (date.getDay() === 0) {
+    date.setDate(date.getDate() - 7)
+  } else {
+    date.setDate(date.getDate() - dayOfWeek)
+  }
+
+  return date.toLocaleDateString('ko-KR', options)
+}
+
+function getFormattedDateByDate (fullDate) {
+  const date = new Date(fullDate)
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }
+  return date.toLocaleDateString('ko-KR', options)
+}
+
+function convertBooleanToReportValue (value) {
+  if (objectHasContents(value) && value) {
+    return 'Yes'
+  } else {
+    return 'No'
+  }
+}
+
 module.exports = {
   isString,
   objectHasContents,
   removeAllOccurrencesOfString,
   replaceAllOccurrencesOfString,
   convertStringToBoolean,
+  convertIntegerToBoolean,
   getFormattedDate,
-  convertToArray
+  getFormattedDateByDate,
+  convertToArray,
+  convertBooleanToReportValue,
+  getPreviousSunday
 }

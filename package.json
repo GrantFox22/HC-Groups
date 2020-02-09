@@ -22,11 +22,13 @@
     "ejs": "~2.6.1",
     "express": "~4.16.1",
     "express-session": "^1.17.0",
+    "fs": "0.0.1-security",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
     "password-strength-meter": "^1.2.2",
     "password-validator": "^5.0.3",
     "pg": "^7.15.1",
+    "string-format": "^2.0.0",
     "supports-color": "^7.1.0",
     "uuid4": "^1.1.4"
   },
