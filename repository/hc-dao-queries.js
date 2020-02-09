@@ -44,12 +44,12 @@ const getMembersAttendanceReport = 'SELECT distinct\n' +
   'dev.group_members.first_name,\n' +
   'dev.group_members.last_name,\n' +
   'dev.attendance.meeting_date,\n' +
-  '(SELECT COUNT(*) FROM (SELECT distinct dev.attendance.attendee_first_name, dev.attendance.attendee_last_name FROM dev.attendance WHERE dev.attendance.attendee_first_name = dev.group_members.first_name AND dev.attendance.attendee_last_name = dev.group_members.last_name AND dev.attendance.meeting_date = $2) a) "attended"\n' +
+  '(SELECT COUNT(*) FROM (SELECT distinct dev.attendance.attendee_first_name, dev.attendance.attendee_last_name FROM dev.attendance WHERE dev.attendance.attendee_first_name = dev.group_members.first_name AND dev.attendance.attendee_last_name = dev.group_members.last_name AND dev.attendance.meeting_date in ($2, $3, $4)) a) "attended"\n' +
   'FROM\n' +
   'dev.group_members\n' +
   'JOIN dev.attendance ON dev.attendance.group_id = dev.group_members.group_id\n' +
   'WHERE\n' +
-  'dev.group_members.group_id = $1 and dev.attendance.meeting_date = $2\n' +
+  'dev.group_members.group_id = $1 and dev.attendance.meeting_date in ($2, $3, $4)\n' +
   'ORDER BY dev.group_members.last_name, dev.group_members.first_name;'
 const getGuestsAttendanceReport = 'SELECT distinct\n' +
   'dev.guests.guest_first_name,\n' +
@@ -60,16 +60,16 @@ const getGuestsAttendanceReport = 'SELECT distinct\n' +
   'dev.guests\n' +
   'JOIN dev.groups ON dev.groups.group_id = dev.guests.group_id\n' +
   'WHERE\n' +
-  'dev.guests.group_id = $1 and dev.guests.meeting_date = $2;'
+  'dev.guests.group_id = $1 and dev.guests.meeting_date in ($2, $3, $4);'
 const getAttendanceStatisticsReport = 'SELECT distinct\n' +
   'dev.attendance.group_name,\n' +
   '(SELECT COUNT(*) FROM dev.group_members where group_id = $1) "total_members",\n' +
-  '(SELECT COUNT(*) FROM (select distinct dev.attendance.attendee_first_name, dev.attendance.attendee_last_name FROM dev.attendance where group_id = $1 and meeting_date = $2) tma)  "total_members_attended",\n' +
-  '(SELECT round((SELECT COUNT(*) FROM (select distinct dev.attendance.attendee_first_name, dev.attendance.attendee_last_name FROM dev.attendance WHERE dev.attendance.group_id = $1 and dev.attendance.meeting_date = $2) tma) * 100::numeric / (SELECT COUNT(*) FROM dev.group_members WHERE dev.group_members.group_id = $1), 2)) "percent_attended"\n' +
+  '(SELECT COUNT(*) FROM (select distinct dev.attendance.attendee_first_name, dev.attendance.attendee_last_name FROM dev.attendance where group_id = $1 and meeting_date in ($2, $3, $4)) tma)  "total_members_attended",\n' +
+  '(SELECT round((SELECT COUNT(*) FROM (select distinct dev.attendance.attendee_first_name, dev.attendance.attendee_last_name FROM dev.attendance WHERE dev.attendance.group_id = $1 and dev.attendance.meeting_date in ($2, $3, $4)) tma) * 100::numeric / (SELECT COUNT(*) FROM dev.group_members WHERE dev.group_members.group_id = $1), 2)) "percent_attended"\n' +
   'FROM\n' +
   'dev.group_members\n' +
   'JOIN dev.attendance ON dev.attendance.group_id = dev.group_members.group_id\n' +
-  'WHERE dev.attendance.group_id = $1 and dev.attendance.meeting_date = $2;'
+  'WHERE dev.attendance.group_id = $1 and dev.attendance.meeting_date in ($2, $3, $4);'
 const getGroupMembersTotal = 'select count(distinct record_id) from dev.group_members where group_id = $1;'
 
 module.exports = {

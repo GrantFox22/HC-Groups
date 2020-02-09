@@ -164,11 +164,11 @@ function getSmallGroups () {
   })
 }
 
-function getMemberAttendanceReport (groupId, meetingDate) {
+function getMemberAttendanceReport (groupId, meetingDate, previousDay, nextDay) {
   const postgres = connectToPostgres()
 
   return new Promise((resolve) => {
-    postgres.query(queries.getMembersAttendanceReport, [groupId, meetingDate], async (error, results) => {
+    postgres.query(queries.getMembersAttendanceReport, [groupId, meetingDate, previousDay, nextDay], async (error, results) => {
       await postgres.end()
       if (error) {
         console.log('Error in hc-dao.getMemberAttendanceReport: ' + error)
@@ -180,11 +180,11 @@ function getMemberAttendanceReport (groupId, meetingDate) {
   })
 }
 
-function getGuestsAttendanceReport (groupId, meetingDate) {
+function getGuestsAttendanceReport (groupId, meetingDate, previousDay, nextDay) {
   const postgres = connectToPostgres()
 
   return new Promise((resolve) => {
-    postgres.query(queries.getGuestsAttendanceReport, [groupId, meetingDate], async (error, results) => {
+    postgres.query(queries.getGuestsAttendanceReport, [groupId, meetingDate, previousDay, nextDay], async (error, results) => {
       await postgres.end()
       if (error) {
         console.log('Error in hc-dao.getGuestsAttendanceReport: ' + error)
@@ -196,11 +196,11 @@ function getGuestsAttendanceReport (groupId, meetingDate) {
   })
 }
 
-function getAttendanceStatisticsReport (groupId, meetingDate) {
+function getAttendanceStatisticsReport (groupId, meetingDate, previousDay, nextDay) {
   const postgres = connectToPostgres()
 
   return new Promise((resolve) => {
-    postgres.query(queries.getAttendanceStatisticsReport, [groupId, meetingDate], async (error, results) => {
+    postgres.query(queries.getAttendanceStatisticsReport, [groupId, meetingDate, previousDay, nextDay], async (error, results) => {
       await postgres.end()
       if (error) {
         console.log('Error in hc-dao.getAttendanceStatisticsReport: ' + error)

@@ -28,11 +28,15 @@ async function getAttendanceReport (groupId, meetingDate, groupName) {
     attendanceReport: null,
     error: null
   }
-  const attendanceStatistics = await hcDao.getAttendanceStatisticsReport(groupId, meetingDate)
+  const previousDay = new Date(meetingDate)
+  previousDay.setDate(previousDay.getDate() - 1)
+  const nextDay = new Date(meetingDate)
+  nextDay.setDate(nextDay.getDate() + 1)
+  const attendanceStatistics = await hcDao.getAttendanceStatisticsReport(groupId, meetingDate, previousDay, nextDay)
   if (commonUtil.objectHasContents(attendanceStatistics)) {
-    const membersAttendance = await hcDao.getMemberAttendanceReport(groupId, meetingDate)
+    const membersAttendance = await hcDao.getMemberAttendanceReport(groupId, meetingDate, previousDay, nextDay)
     if (commonUtil.objectHasContents(membersAttendance)) {
-      const guestsAttendance = await hcDao.getGuestsAttendanceReport(groupId, meetingDate)
+      const guestsAttendance = await hcDao.getGuestsAttendanceReport(groupId, meetingDate, previousDay, nextDay)
       if (commonUtil.objectHasContents(guestsAttendance)) {
         result.attendanceReport = buildAttendanceReport(attendanceStatistics, membersAttendance, guestsAttendance, groupName, groupId)
         result.success = true
