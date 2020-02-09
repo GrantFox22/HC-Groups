@@ -113,7 +113,7 @@ async function saveReport (attendanceReports, meetingDate) {
       memberData += '\tMEMBER NAME: ' + report.memberFirstName[i] + ' ' + report.memberLastName[i] + '\n\tATTENDED: ' + commonUtil.convertBooleanToReportValue(report.attended[i]) + '\n\n'
     }
     for (let i = 0; i < report.guestFirstName.length; i++) {
-      guestData += '\tGUEST NAME: ' + report.guestFirstName[i] + ' ' + report.guestLastName[i] + '\n\tATTENDED: Yes'
+      guestData += '\tGUEST NAME: ' + report.guestFirstName[i] + ' ' + report.guestLastName[i] + '\n\tATTENDED: Yes\n\n'
     }
 
     if (!commonUtil.objectHasContents(memberData)) {
