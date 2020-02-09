@@ -1,4 +1,4 @@
-require('dotenv').config({ path: '../.env' })
+require('dotenv').config()
 const queries = require('./hc-dao-queries')
 const leader = require('../domain/leader')
 const member = require('../domain/member')
@@ -164,6 +164,70 @@ function getSmallGroups () {
   })
 }
 
+function getMemberAttendanceReport (groupId, meetingDate) {
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.getMembersAttendanceReport, [groupId, meetingDate], async (error, results) => {
+      await postgres.end()
+      if (error) {
+        console.log('Error in hc-dao.getMemberAttendanceReport: ' + error)
+        resolve(null)
+      } else {
+        resolve(results.rows)
+      }
+    })
+  })
+}
+
+function getGuestsAttendanceReport (groupId, meetingDate) {
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.getGuestsAttendanceReport, [groupId, meetingDate], async (error, results) => {
+      await postgres.end()
+      if (error) {
+        console.log('Error in hc-dao.getGuestsAttendanceReport: ' + error)
+        resolve(null)
+      } else {
+        resolve(results.rows)
+      }
+    })
+  })
+}
+
+function getAttendanceStatisticsReport (groupId, meetingDate) {
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.getAttendanceStatisticsReport, [groupId, meetingDate], async (error, results) => {
+      await postgres.end()
+      if (error) {
+        console.log('Error in hc-dao.getAttendanceStatisticsReport: ' + error)
+        resolve(null)
+      } else {
+        resolve(results.rows)
+      }
+    })
+  })
+}
+
+function getGroupMembersTotal (groupId) {
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.getGroupMembersTotal, [groupId], async (error, results) => {
+      await postgres.end()
+      if (error) {
+        console.log('Error in hc-dao.getGroupMembersTotal: ' + error)
+        resolve(-1)
+      } else {
+        resolve(results.rows[0].count)
+      }
+    })
+  })
+}
+
 function registerLeader (token, userId) {
   const postgres = connectToPostgres()
 
@@ -261,5 +325,9 @@ module.exports = {
   registerLeader,
   updateMember,
   deleteMember,
-  addMember
+  addMember,
+  getMemberAttendanceReport,
+  getGuestsAttendanceReport,
+  getAttendanceStatisticsReport,
+  getGroupMembersTotal
 }
