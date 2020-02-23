@@ -1,0 +1,175 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>HC Group Leaders Admin - Manage Groups</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="/stylesheets/style.css" rel="stylesheet"/>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        let counter = 0;
+
+        $("#addGroup").on("click", function () {
+          showNewGroups();
+          let newRow = $("<tr>");
+          let cols = "";
+
+          cols += '<td class="checkIn"><input type="text" class="form-control" name="newGroupName"/></td>';
+          cols += '<td><input type="button" class="ibtnDel btn btn-md btn-danger" value="Remove"></td>';
+          newRow.append(cols);
+          $("table.order-list").append(newRow);
+          counter++;
+        });
+
+        $("table.order-list").on("click", ".ibtnDel", function (event) {
+          $(this).closest("tr").remove();
+          counter -= 1
+          let newMembers = $('#newGroupTable tr').length;
+          if ((newMembers - 1) === 0) {
+            hideNewGroups();
+          }
+        });
+
+        $(':checkbox').click(function() {
+          let checkbox = $(this);
+          if (this.name === 'modifiedData') {
+            let row = checkbox.closest('tr');
+            let inputText = $('input[type=text]', row);
+            if (checkbox.is(':checked')) {
+              inputText.removeAttr('readonly');
+            }
+            else {
+              inputText.attr('readonly', 'readonly');
+            }
+          }
+        });
+      });
+
+      if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+      }
+
+      function showNewGroups() {
+        $("#newGroupDiv").show();
+        $("#newGroupTableHeader").show();
+        $("#newGroupHeader").show();
+      }
+
+      function hideNewGroups() {
+        $("#newGroupDiv").hide();
+        $("#newGroupTableHeader").hide();
+        $("#newGroupHeader").hide();
+      }
+
+      function saveButtonClick() {
+        $("#saveButton").val('true');
+      }
+    </script>
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collaspe-for-profile" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://www.hollandchapel.org/" target="_blank">
+                <img alt="Brand" style="max-width:100px" src="/images/hc-logo.png">
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="navbar-collaspe-for-profile">
+            <ul class="nav navbar-nav navbar-right">
+                <% if (leader !== null && leader._leaderType === 2) { %>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="attendance-report">Generate Attendance Report</a></li>
+                            <li><a href="manage-members">Manage Small Group Members</a></li>
+                            <li><a href="manage-groups">Manage Small Groups</a></li>
+                        </ul>
+                    </li><%
+                }%>
+                <li class="dropdown">
+                    <% if (leader !== null) { %>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Welcome, <%= leader._leaderFirstName%> <span class="caret"></span></a>
+                    <% } else { %>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Site Actions<span class="caret"></span></a><%
+                    }%>
+                    <ul class="dropdown-menu">
+                        <li><a href="logout">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+<div class="container" style="padding-top:20px">
+    <% if (leader !== null) { %>
+        <h1 style="text-align: center">Manage Small Groups</h1>
+    <% } else { %>
+        <h1 style="text-align: center">Holland Chapel</h1><%
+    }%>
+    <div class="col-sm-6 col-sm-offset-3" style="padding-top:80px">
+        <form action="/manage-groups" method="post">
+            <div class="form-group">
+                <% if (groups !== null && groups.length > 0) { %>
+                    <div class="panel panel-default" id="groupsDiv">
+                        <table class="table table-bordered table-responsive table-hover" id="groupsTable">
+                            <thead id="groupsTableHeader">
+                            <tr class="header" style="background-color: #d2f8d2">
+                                <th>Group Name</th>
+                                <th>Modify</th>
+                                <th>Delete</th>
+                            </tr>
+                            </thead>
+                            <tbody id="membersTableBody">
+                            <% for (let i = 0; i < groups.length; i++) { %>
+                                <tr>
+                                    <td style="vertical-align: middle"><input type="text" class="form-control" name="groupName" value="<%= groups[i]._groupName%>" readonly/></td>
+                                    <td style="vertical-align: middle"><input type="checkbox" name="modifiedData" value="<%= i.toString() + '#' + groups[i]._groupId%>"/></td>
+                                    <td style="vertical-align: middle"><input type="checkbox" name="deletedData" value="<%= groups[i]._groupId + '#' + groups[i]._groupName%>"/></td>
+                                </tr><%
+                            } %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } %>
+                <h2 id="newGroupHeader" style="text-align: center; padding: 30px;" hidden>New Groups</h2>
+                <div class="panel panel-default" id="newGroupDiv" hidden>
+                    <table id="newGroupTable" class="table order-list table-bordered">
+                        <thead>
+                        <tr class="header" style="background-color: #d2f8d2" id="newGroupTableHeader" hidden>
+                            <th>Group Name</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <input type="button" class="btn btn-lg btn-success" id="addGroup" name="addGroup" value="Add New Group"/>
+                <br />
+                <br />
+                <br />
+                <br />
+                <button type="submit" class="btn btn-lg btn-primary" id="saveButton" name="saveButton" value="false" onclick="saveButtonClick()">Save Changes</button>
+                <br />
+                <br />
+                <br />
+                <br />
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

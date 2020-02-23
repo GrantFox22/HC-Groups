@@ -148,6 +148,54 @@ function addMember (memberFirstName, memberLastName, groupId) {
   })
 }
 
+function updateGroup (groupName, groupId) {
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.updateGroup, [groupName, groupId], async (error, results) => {
+      await postgres.end()
+      if (error) {
+        console.log('Error in hc-dao.updateGroup: ' + error)
+        resolve(-1)
+      } else {
+        resolve(results.rowCount)
+      }
+    })
+  })
+}
+
+function deleteGroup (groupId) {
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.deleteGroup, [groupId], async (error, results) => {
+      await postgres.end()
+      if (error) {
+        console.log('Error in hc-dao.deleteGroup: ' + error)
+        resolve(-1)
+      } else {
+        resolve(results.rowCount)
+      }
+    })
+  })
+}
+
+function addGroup (groupName) {
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.addGroup, [groupName], async (error, results) => {
+      await postgres.end()
+      if (error) {
+        console.log('Error in hc-dao.addGroup: ' + error)
+        resolve(-1)
+      } else {
+        resolve(results.rowCount)
+      }
+    })
+  })
+}
+
 function getSmallGroups () {
   const postgres = connectToPostgres()
 
@@ -329,5 +377,8 @@ module.exports = {
   getMemberAttendanceReport,
   getGuestsAttendanceReport,
   getAttendanceStatisticsReport,
-  getGroupMembersTotal
+  getGroupMembersTotal,
+  addGroup,
+  deleteGroup,
+  updateGroup
 }

@@ -40,6 +40,9 @@ const deleteMember = 'delete from dev.group_members where first_name = $1 and la
 const addMember = 'insert into dev.group_members \n' +
   '(first_name, last_name, group_id) \n' +
   'values ($1, $2, $3);'
+const updateGroup = 'update dev.groups set group_name = $1, added_date = current_timestamp where group_id = $2;'
+const deleteGroup = 'delete from dev.groups where group_id = $1;'
+const addGroup = 'insert into dev.groups (group_name, added_date) VALUES ($1, current_timestamp);'
 const getMembersAttendanceReport = 'SELECT distinct\n' +
   'dev.group_members.first_name,\n' +
   'dev.group_members.last_name,\n' +
@@ -86,5 +89,8 @@ module.exports = {
   getMembersAttendanceReport,
   getGuestsAttendanceReport,
   getAttendanceStatisticsReport,
-  getGroupMembersTotal
+  getGroupMembersTotal,
+  updateGroup,
+  deleteGroup,
+  addGroup
 }
