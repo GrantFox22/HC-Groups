@@ -24,6 +24,7 @@
     "express-session": "^1.17.0",
     "fs": "0.0.1-security",
     "http-errors": "~1.6.3",
+    "lodash": "^4.17.15",
     "morgan": "~1.9.1",
     "password-strength-meter": "^1.2.2",
     "password-validator": "^5.0.3",

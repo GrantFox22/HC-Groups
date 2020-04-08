@@ -32,6 +32,22 @@ function getLeader (userId) {
   })
 }
 
+function getLeaders () {
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.getLeaders, async (error, results) => {
+      await postgres.end()
+      if (error) {
+        console.log('Error in hc-dao.getLeaders: ' + error)
+        resolve(buildLeaders(null))
+      } else {
+        resolve(buildLeaders(results))
+      }
+    })
+  })
+}
+
 function getSmallGroupMembers (groupId) {
   const postgres = connectToPostgres()
 
@@ -180,6 +196,54 @@ function deleteGroup (groupId) {
   })
 }
 
+function deleteLeader (leaderId) {
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.deleteLeader, [leaderId], async (error, results) => {
+      await postgres.end()
+      if (error) {
+        console.log('Error in hc-dao.deleteLeader: ' + error)
+        resolve(-1)
+      } else {
+        resolve(results.rowCount)
+      }
+    })
+  })
+}
+
+function updateLeader (leader) {
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.updateLeader, [leader.leaderFirstName, leader.leaderLastName, leader.leaderUserId, leader.leaderType, leader.assignedGroup, leader.leaderId], async (error, results) => {
+      await postgres.end()
+      if (error) {
+        console.log('Error in hc-dao.updateLeader: ' + error)
+        resolve(-1)
+      } else {
+        resolve(results.rowCount)
+      }
+    })
+  })
+}
+
+function addLeader (newLeader) {
+  const postgres = connectToPostgres()
+
+  return new Promise((resolve) => {
+    postgres.query(queries.addLeader, [newLeader.firstName, newLeader.lastName, newLeader.leaderUserId, newLeader.leaderType, newLeader.group], async (error, results) => {
+      await postgres.end()
+      if (error) {
+        console.log('Error in hc-dao.addLeader: ' + error)
+        resolve(-1)
+      } else {
+        resolve(results.rowCount)
+      }
+    })
+  })
+}
+
 function addGroup (groupName) {
   const postgres = connectToPostgres()
 
@@ -294,7 +358,7 @@ function registerLeader (token, userId) {
 function buildLeader (results) {
   const smallGroupLeader = new leader.SmallGroupLeader()
 
-  if (results === null) {
+  if (results === null || results.rowCount === 0) {
     return smallGroupLeader
   } else {
     smallGroupLeader.leaderFirstName = results.rows[0].leader_first_name
@@ -306,9 +370,37 @@ function buildLeader (results) {
     smallGroupLeader.lastUpdated = results.rows[0].last_updated
     smallGroupLeader.groupId = results.rows[0].group_id
     smallGroupLeader.groupName = results.rows[0].group_name
+    smallGroupLeader.leaderId = results.rows[0].leader_id
   }
 
   return smallGroupLeader
+}
+
+function buildLeaders (results) {
+  const smallGroupLeaders = []
+  if (results === null) {
+    const smallGroupLeader = new leader.SmallGroupLeader()
+    smallGroupLeaders.push(smallGroupLeader)
+    return smallGroupLeaders
+  } else {
+    for (const row of results.rows) {
+      const smallGroupLeader = new leader.SmallGroupLeader()
+      smallGroupLeader.leaderFirstName = row.leader_first_name
+      smallGroupLeader.leaderLastName = row.leader_last_name
+      smallGroupLeader.leaderUserId = row.leader_user_id
+      smallGroupLeader.leaderToken = row.leader_token
+      smallGroupLeader.leaderType = row.leader_type
+      smallGroupLeader.leaderTypeDescription = row.leader_type_description
+      smallGroupLeader.createdDate = row.created_date
+      smallGroupLeader.lastUpdated = row.last_updated
+      smallGroupLeader.groupId = row.group_id
+      smallGroupLeader.groupName = row.group_name
+      smallGroupLeader.leaderId = row.leader_id
+      smallGroupLeaders.push(smallGroupLeader)
+    }
+  }
+
+  return smallGroupLeaders
 }
 
 function buildMembers (results) {
@@ -380,5 +472,9 @@ module.exports = {
   getGroupMembersTotal,
   addGroup,
   deleteGroup,
-  updateGroup
+  updateGroup,
+  getLeaders,
+  deleteLeader,
+  updateLeader,
+  addLeader
 }

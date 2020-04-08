@@ -18,11 +18,21 @@
         <form action="/login" method="post">
             <div class="form-group">
                 <label>Username</label>
-                <input type="text" class="form-control" name="username">
+                <% if (usernameError !== null) { %>
+                    <input class="form-control has-error has-feedback" type="text" name="username" value="<%= username%>" style="font-weight: normal; border: 2px solid red">
+                    <span class="help-block" style="color: red"><i class="fa fa-exclamation-circle" style="color: red"></i>&nbsp;&nbsp;<%= usernameError%></span><%
+                } else { %>
+                    <input type="text" class="form-control" name="username" value="<%= username%>">
+                <% } %>
             </div>
             <div class="form-group">
                 <label>Password</label>
-                <input type="password" class="form-control" name="password">
+                <% if (passwordError !== null) { %>
+                    <input type="password" class="form-control has-error has-feedback" name="password" style="font-weight: normal; border: 2px solid red">
+                    <span class="help-block" style="color: red"><i class="fa fa-exclamation-circle" style="color: red"></i>&nbsp;&nbsp;<%= passwordError%></span><%
+                } else { %>
+                    <input type="password" class="form-control" name="password">
+                <% } %>
             </div>
             <button type="submit" class="btn btn-primary btn-lg">Login</button>
         </form>

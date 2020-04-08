@@ -5,7 +5,7 @@ const hcDao = require('../repository/hc-dao')
 const express = require('express')
 const router = express.Router()
 
-/* GET manage members page. */
+/* GET manage groups page. */
 router.get('/', async function (req, res, next) {
   if (!req.session.leader) {
     res.redirect('login')
@@ -34,7 +34,7 @@ router.post('/', async function (req, res, next) {
         next(createError(500))
       }
     } else {
-      res.render('manage-groups', { leader: req.session.leader, groups: req.session.groups, hcMembers: null, selectedGroup: null })
+      res.render('manage-groups', { leader: req.session.leader, groups: req.session.groups })
     }
   }
 })
