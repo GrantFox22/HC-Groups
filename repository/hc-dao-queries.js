@@ -14,6 +14,23 @@ const getLeader = 'SELECT\n' +
   'WHERE\n' +
   'dev.leaders.leader_user_id = $1\n' +
   'LIMIT 1;'
+const getLeaders = 'SELECT\n' +
+  'dev.leaders.leader_id,\n' +
+  'dev.leaders.leader_first_name,\n' +
+  'dev.leaders.leader_last_name,\n' +
+  'dev.leaders.leader_user_id,\n' +
+  'dev.leaders.leader_token,\n' +
+  'dev.leaders.leader_type,\n' +
+  'dev.leader_types.type_name "leader_type_description",\n' +
+  'dev.leaders.created_date,\n' +
+  'dev.leaders.last_updated,\n' +
+  'dev.leaders.group_id,\n' +
+  'dev.groups.group_name\n' +
+  'FROM\n' +
+  'dev.leaders\n' +
+  'JOIN dev.groups ON dev.groups.group_id = dev.leaders.group_id\n' +
+  'JOIN dev.leader_types ON dev.leader_types.type_id = dev.leaders.leader_type\n' +
+  'ORDER BY leader_id;'
 const getSmallGroupMembers = 'SELECT\n' +
   'CONCAT(first_name, \' \', last_name) "member_name"\n' +
   'FROM\n' +
@@ -40,6 +57,9 @@ const deleteMember = 'delete from dev.group_members where first_name = $1 and la
 const addMember = 'insert into dev.group_members \n' +
   '(first_name, last_name, group_id) \n' +
   'values ($1, $2, $3);'
+const updateGroup = 'update dev.groups set group_name = $1, added_date = current_timestamp where group_id = $2;'
+const deleteGroup = 'delete from dev.groups where group_id = $1;'
+const addGroup = 'insert into dev.groups (group_name, added_date) VALUES ($1, current_timestamp);'
 const getMembersAttendanceReport = 'SELECT distinct\n' +
   'dev.group_members.first_name,\n' +
   'dev.group_members.last_name,\n' +
@@ -71,7 +91,10 @@ const getAttendanceStatisticsReport = 'SELECT distinct\n' +
   'JOIN dev.attendance ON dev.attendance.group_id = dev.group_members.group_id\n' +
   'WHERE dev.attendance.group_id = $1 and dev.attendance.meeting_date in ($2, $3, $4);'
 const getGroupMembersTotal = 'select count(distinct record_id) from dev.group_members where group_id = $1;'
-
+const deleteLeader = 'delete from dev.leaders where leader_id = $1;'
+const updateLeader = 'update dev.leaders set leader_first_name = $1, leader_last_name = $2, leader_user_id = $3, leader_type = $4, group_id = $5, last_updated = current_timestamp where leader_id = $6;'
+const addLeader = 'insert into dev.leaders (leader_first_name, leader_last_name, leader_user_id, leader_type, created_date, last_updated, group_id)\n' +
+  'values ($1, $2, $3, $4, current_timestamp, current_timestamp, $5);'
 module.exports = {
   getLeader,
   getSmallGroupMembers,
@@ -86,5 +109,12 @@ module.exports = {
   getMembersAttendanceReport,
   getGuestsAttendanceReport,
   getAttendanceStatisticsReport,
-  getGroupMembersTotal
+  getGroupMembersTotal,
+  updateGroup,
+  deleteGroup,
+  addGroup,
+  getLeaders,
+  deleteLeader,
+  updateLeader,
+  addLeader
 }

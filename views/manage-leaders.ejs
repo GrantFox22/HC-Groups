@@ -1,0 +1,231 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>HC Group Leaders Admin - Manage Leaders</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="/stylesheets/style.css" rel="stylesheet"/>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        let counter = 0;
+
+        $("#addLeader").on("click", function () {
+          showNewLeaders();
+          let newRow = $("<tr>");
+          let cols = "";
+
+          cols += '<td class="checkIn"><input type="text" class="form-control" name="newLeaderFirstName"/></td>';
+          cols += '<td class="checkIn"><input type="text" class="form-control" name="newLeaderLastName"/></td>';
+          cols += '<td class="checkIn"><input type="text" class="form-control" name="newLeaderUserId"/></td>';
+          cols += '<td class="checkIn"><select class="form-control" id="newLeaderType" name="newLeaderType">' +
+                    '<option value="default">Select...</option><option value="1">Small Group Leader</option><option value="2">Admin\\Small Group Leader</option>' +
+                  '</td>';
+          cols += '<td class="checkIn"><select class="form-control" id="newGroup" name="newGroup">' +
+            '<option value="default">Select...</option>' +
+                  <% for (const group of groups) {
+                  %>'<option value="<%= group._groupId%>"><%= group._groupName%>\'s Small Group</option>' +<%
+                  }%>
+            '</select></td>';
+          cols += '<td><input type="button" class="ibtnDel btn btn-md btn-danger" value="Remove"></td>';
+          newRow.append(cols);
+          $("table.order-list").append(newRow);
+          counter++;
+        });
+
+        $("table.order-list").on("click", ".ibtnDel", function (event) {
+          $(this).closest("tr").remove();
+          counter -= 1
+          let newLeaders = $('#newLeaderTable tr').length;
+          if ((newLeaders - 1) === 0) {
+            hideNewLeaders();
+          }
+        });
+
+        $(':checkbox').click(function() {
+          let checkbox = $(this);
+          if (this.name === 'modifiedData') {
+            let row = checkbox.closest('tr');
+            let inputText = $('input[type=text]', row);
+            if (checkbox.is(':checked')) {
+              inputText.removeAttr('readonly');
+            }
+            else {
+              inputText.attr('readonly', 'readonly');
+            }
+
+            let selectOptionLeaderType = $('select[id=leaderType]', row);
+            if (checkbox.is(':checked')) {
+              selectOptionLeaderType.removeAttr('disabled');
+            }
+            else {
+              selectOptionLeaderType.attr('disabled', 'disabled');
+            }
+
+            let selectOptionAssignedGroup = $('select[id=assignedGroup]', row);
+            if (checkbox.is(':checked')) {
+              selectOptionAssignedGroup.removeAttr('disabled');
+            }
+            else {
+              selectOptionAssignedGroup.attr('disabled', 'disabled');
+            }
+          }
+        });
+      });
+
+      if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+      }
+
+      function showNewLeaders() {
+        $("#newLeaderDiv").show();
+        $("#newLeaderTableHeader").show();
+        $("#newLeaderHeader").show();
+      }
+
+      function hideNewLeaders() {
+        $("#newLeaderDiv").hide();
+        $("#newLeaderTableHeader").hide();
+        $("#newLeaderHeader").hide();
+      }
+
+      function saveButtonClick() {
+        $("#saveButton").val('true');
+      }
+    </script>
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collaspe-for-profile" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://www.hollandchapel.org/" target="_blank">
+                <img alt="Brand" style="max-width:100px" src="/images/hc-logo.png">
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="navbar-collaspe-for-profile">
+            <ul class="nav navbar-nav navbar-right">
+                <% if (leader !== null && leader._leaderType === 2) { %>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="attendance-report">Generate Attendance Report</a></li>
+                            <li><a href="manage-members">Manage Small Group Members</a></li>
+                            <li><a href="manage-groups">Manage Small Groups</a></li>
+                            <li><a href="manage-leaders">Manage Small Group Leaders</a></li>
+                        </ul>
+                    </li><%
+                }%>
+                <li class="dropdown">
+                    <% if (leader !== null) { %>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Welcome, <%= leader._leaderFirstName%> <span class="caret"></span></a>
+                    <% } else { %>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Site Actions<span class="caret"></span></a><%
+                    }%>
+                    <ul class="dropdown-menu">
+                        <li><a href="logout">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+<div class="container" style="padding-top:20px">
+    <% if (leader !== null) { %>
+        <h1 style="text-align: center">Manage Small Group Leaders</h1>
+    <% } else { %>
+        <h1 style="text-align: center">Holland Chapel</h1><%
+    }%>
+    <div class="col-sm-16" style="padding-top:80px">
+        <form action="/manage-leaders" method="post">
+            <div class="form-group">
+                <% if (leaders !== null && leaders.length > 0) { %>
+                    <div class="panel panel-default wrapper" id="leadersDiv">
+                        <table class="table table-bordered table-responsive table-hover" id="leadersTable">
+                            <thead id="leadersTableHeader">
+                            <tr class="header" style="background-color: #d2f8d2">
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>User ID</th>
+                                <th>Leader Type</th>
+                                <th>Assigned Group</th>
+                                <th>Modify</th>
+                                <th>Delete</th>
+                            </tr>
+                            </thead>
+                            <tbody id="leadersTableBody">
+                            <% for (let i = 0; i < leaders.length; i++) { %>
+                                <tr>
+                                    <td style="vertical-align: middle"><input type="text" class="form-control" name="leaderFirstName" value="<%= leaders[i]._leaderFirstName%>" readonly/></td>
+                                    <td style="vertical-align: middle"><input type="text" class="form-control" name="leaderLastName" value="<%= leaders[i]._leaderLastName%>" readonly/></td>
+                                    <td style="vertical-align: middle"><input type="text" class="form-control" name="leaderUserId" value="<%= leaders[i]._leaderUserId%>" readonly/></td>
+                                    <td style="vertical-align: middle"><select class="form-control" id="leaderType" name="leaderType" disabled>
+                                                        <% if (leaders[i]._leaderType === 1) { %>
+                                                            <option value="1#<%= leaders[i]._leaderId%>" selected>Small Group Leader</option>
+                                                            <option value="2#<%= leaders[i]._leaderId%>">Admin\Small Group Leader</option><%
+                                                        } else { %>
+                                                            <option value="1#<%= leaders[i]._leaderId%>">Small Group Leader</option>
+                                                            <option value="2#<%= leaders[i]._leaderId%>" selected>Admin\Small Group Leader</option><%
+                                                        } %>
+                                                    </select></td>
+                                    <td style="vertical-align: middle"><select class="form-control" id="assignedGroup" name="assignedGroup" disabled>
+                                                        <% for (const group of groups) {
+                                                            if (leaders[i]._groupId === group._groupId) { %>
+                                                                <option value="<%= group._groupId%>#<%= leaders[i]._leaderId%>" selected><%= group._groupName%>'s Small Group</option><%
+                                                            } else { %>
+                                                                <option value="<%= group._groupId%>#<%= leaders[i]._leaderId%>"><%= group._groupName%>'s Small Group</option><%
+                                                            }
+                                                        }%>
+                                                    </select></td>
+                                    <td style="vertical-align: middle"><input type="checkbox" name="modifiedData" value="<%= i.toString() + '#' + leaders[i]._leaderId%>"/></td>
+                                    <td style="vertical-align: middle"><input type="checkbox" name="deletedData" value="<%= i.toString() + '#' + leaders[i]._leaderId%>"/></td>
+                                </tr><%
+                            } %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } %>
+                <h2 id="newLeaderHeader" style="text-align: center; padding: 30px;" hidden>New Leaders</h2>
+                <div class="panel panel-default" id="newLeaderDiv" hidden>
+                    <table id="newLeaderTable" class="table order-list table-bordered" style="width: 100%;">
+                        <thead>
+                        <tr class="header" style="background-color: #d2f8d2" id="newLeaderTableHeader" hidden>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>User ID</th>
+                            <th>Leader Type</th>
+                            <th>Assign Group</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <input type="button" class="btn btn-lg btn-success" id="addLeader" name="addLeader" value="Add New Leader"/>
+                <br />
+                <br />
+                <br />
+                <br />
+                <button type="submit" class="btn btn-lg btn-primary" id="saveButton" name="saveButton" value="false" onclick="saveButtonClick()">Save Changes</button>
+                <br />
+                <br />
+                <br />
+                <br />
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

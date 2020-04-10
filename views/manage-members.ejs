@@ -96,6 +96,8 @@
                         <ul class="dropdown-menu">
                             <li><a href="attendance-report">Generate Attendance Report</a></li>
                             <li><a href="manage-members">Manage Small Group Members</a></li>
+                            <li><a href="manage-groups">Manage Small Groups</a></li>
+                            <li><a href="manage-leaders">Manage Small Group Leaders</a></li>
                         </ul>
                     </li><%
                 }%>
@@ -163,7 +165,7 @@
                         </table>
                     </div>
                 <% } %>
-                <h2 id="newMemberHeader" style="text-align: center; padding: 60px;" hidden>New Members</h2>
+                <h2 id="newMemberHeader" style="text-align: center; padding: 30px;" hidden>New Members</h2>
                 <div class="panel panel-default" id="newMemeberDiv" hidden>
                     <table id="newMemberTable" class="table order-list table-bordered">
                         <thead>
@@ -178,7 +180,7 @@
                     </table>
                 </div>
                 <% if (selectedGroup !== null && selectedGroup !== 'default') { %>
-                    <input type="button" class="btn btn-lg btn-success" id="addMember" name="addMember" value="Add New Member" onclick="toggleButtons()"/>
+                    <input type="button" class="btn btn-lg btn-success" id="addMember" name="addMember" value="Add New Member"/>
                     <br />
                     <br />
                     <br />
@@ -189,7 +191,7 @@
                     <br />
                     <br /><%
                 } else { %>
-                    <input type="button" style="visibility: hidden" class="btn btn-lg btn-success" id="addMember" name="addMember" value="Add New Member" onclick="toggleButtons()"/>
+                    <input type="button" style="visibility: hidden" class="btn btn-lg btn-success" id="addMember" name="addMember" value="Add New Member"/>
                     <br />
                     <br />
                     <br />
